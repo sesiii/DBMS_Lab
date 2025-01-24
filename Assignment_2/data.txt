@@ -1,0 +1,123 @@
+INSERT INTO households (household_id, address, number_of_members, income) VALUES
+(1, '123 Main Street, Phulera Village, District Rajasthan', 4, 75000),
+(2, '45 Gandhi Road, Phulera Village, District Rajasthan', 3, 50000),
+(3, '78 Nehru Colony, Phulera Village, District Rajasthan', 5, 100000),
+(4, '22 Shastri Nagar, Phulera Village, District Rajasthan', 2, 60000),
+(5, '56 Tilak Street, Phulera Village, District Rajasthan', 6, 85000),
+(6, '11 Subhash Chowk, Phulera Village, District Rajasthan', 3, 45000),
+(7, '33 Azad Lane, Phulera Village, District Rajasthan', 4, 70000),
+(8, '89 Patel Marg, Phulera Village, District Rajasthan', 5, 95000);
+
+UPDATE households 
+SET number_of_members = LEAST(number_of_members, 4);
+
+INSERT INTO citizens (
+    citizen_id, aadhar_no, first_name, last_name, date_of_birth, 
+    phone_number, age, caste, gender, household_id, 
+    educational_qualification, occupation, marital_status
+) VALUES 
+(1, '123456789012', 'Ramesh', 'Kumar', '1980-05-15', '9876543210', 43, 'General', 'Male', 1, 'Graduate', 'Farmer', 'Married'),
+(2, '234567890123', 'Priya', 'Singh', '2005-03-20', '8765432109', 18, 'OBC', 'Female', 1, '12th', 'Student', 'Unmarried'),
+(3, '345678901234', 'Amit', 'Patel', '1990-11-10', '7654321098', 33, 'SC', 'Male', 2, '10th', 'Worker', 'Married'),
+(4, '456789012345', 'Sunita', 'Gupta', '2016-07-25', '6543210987', 9, 'General', 'Female', 3, 'Graduate', 'Teacher', 'Married'),
+(5, '567890123456', 'Rajesh', 'Sharma', '1975-12-05', '5432109876', 48, 'ST', 'Male', 4, '12th', 'Driver', 'Married'),
+(6, '678901234567', 'Neha', 'Verma', '2024-09-18', '4321098765', 2, 'OBC', 'Female', 5, 'Graduate', 'Software Engineer', 'Unmarried'),
+(7, '789012345678', 'Vikram', 'Singh', '1995-06-30', '3210987654', 28, 'General', 'Male', 6, 'Diploma', 'Technician', 'Unmarried'),
+(8, '890123456789', 'Meera', 'Devi', '1970-02-14', '2109876543', 53, 'SC', 'Female', 7, '10th', 'Homemaker', 'Married');
+
+
+
+INSERT INTO land_records (land_id, citizen_id, area_acres, crop_type) VALUES
+(1, 1, 2.5, 'Rice'),
+(2, 3, 1.0, 'Wheat'),
+(3, 4, 1.5, 'Sugarcane'),
+(4, 5, 0.8, 'Maize'),
+(5, 6, 0.5, 'Vegetables');
+
+
+INSERT INTO panchayat_employees (employee_id, citizen_id, role) VALUES
+(1, 1, 'Sarpanch'),
+(2, 4, 'Secretary'),
+(3, 3, 'Village Coordinator');
+
+INSERT INTO assets (asset_id, type, household_id, value, location, name, installation_date) VALUES
+(1, 'Street Light', 1, 50000, 'Main Road', 'Street Light 1', '2024-01-15'),
+(2, 'Water Pump', 2, 75000, 'Community Well', 'Village Water Pump', '2023-11-20'),
+(3, 'Community Hall', 3, 500000, 'Village Center', 'Gram Panchayat Hall', '2022-05-10'),
+(4, 'Electricity Transformer', 4, 200000, 'Village Outskirts', 'Power Distribution Unit', '2023-07-30'),
+(5, 'Public Toilet', 5, 100000, 'Market Area', 'Community Sanitation Facility', '2023-09-25');
+
+
+INSERT INTO welfare_schemes (scheme_id, name, description, eligibility, benefits, start_date, end_date) VALUES
+(1, 'Pradhan Mantri Awas Yojana', 'Housing for All', 'Below Poverty Line Families', 'Free Housing', '2022-01-01', '2024-12-31'),
+(2, 'PM Kisan Samman Nidhi', 'Direct Income Support to Farmers', 'Small and Marginal Farmers', 'Financial Assistance ₹6000/Year', '2019-02-24', NULL),
+(3, 'National Social Assistance Programme', 'Social Security for Elderly', 'Senior Citizens, Widows', 'Pension and Financial Support', '2020-04-01', NULL),
+(4, 'Mid-Day Meal Scheme', 'School Nutrition Programme', 'School Children (6-14 years)', 'Free Nutritious Meal', '2021-06-15', NULL),
+(5, 'Pradhan Mantri Matru Vandana Yojana', 'Maternity Benefit Programme', 'Pregnant and Lactating Women', 'Cash Incentive ₹5000', '2017-09-01', NULL);
+
+INSERT INTO scheme_enrollments (enrollment_id, citizen_id, scheme_id, enrollment_date) VALUES
+(1, 1, 1, '2022-06-15'),
+(2, 3, 2, '2022-07-20'),
+(3, 4, 3, '2022-08-10'),
+(4, 2, 4, '2022-09-05'),
+(5, 5, 5, '2022-10-12');
+
+INSERT INTO vaccinations (vaccination_id, citizen_id, vaccine_type, date) VALUES
+(1, 2, 'COVID-19', '2024-01-15'),
+(2, 3, 'Polio', '2024-02-20'),
+(3, 4, 'Hepatitis B', '2023-11-10'),
+(4, 5, 'Tetanus', '2023-12-05'),
+(5, 6, 'MMR', '2024-03-01');
+
+
+
+INSERT INTO census_data (
+   census_id, household_id, citizen_id, year, population, 
+   demographics, description, event_type, event_date
+) VALUES
+(1, 1, 1, 2023, 4, 'Rural Family', 'Household Census Data', 'Population Survey', '2023-03-15'),
+(2, 2, 3, 2023, 3, 'Working Class Family', 'Household Census Data', 'Population Survey', '2023-03-16'),
+(3, 3, 4, 2023, 4, 'Middle-Income Family', 'Household Census Data', 'Population Survey', '2023-03-17'),
+(4, 4, 5, 2023, 2, 'Small Family', 'Household Census Data', 'Population Survey', '2023-03-18'),
+(5, 5, 6, 2023, 3, 'Young Professional Family', 'Household Census Data', 'Population Survey', '2023-03-19');
+
+INSERT INTO tax (tax_id, amount, payment_date, status, payment_mode, financial_year, citizen_id)
+VALUES
+(1, 5000.00, '2023-03-15', 'Paid', 'Online', '2023-2024', 1),
+(2, 3000.00, '2023-04-10', 'Pending', 'Cash', '2023-2024', 2),
+(3, 7000.00, '2023-05-05', 'Paid', 'Card', '2023-2024', 3),
+(4, 4000.00, '2023-06-20', 'Paid', 'UPI', '2023-2024', 4),
+(5, 6000.00, '2023-07-25', 'Pending', 'Net Banking', '2023-2024', 5);
+
+
+INSERT INTO income (income_id, citizen_id, amount, income_date, source, financial_year)
+VALUES
+(1, 1, 120000.00, '2023-01-15', 'Agriculture', '2023-2024'),
+(2, 2, 50000.00, '2023-02-10', 'Part-Time Job', '2023-2024'),
+(3, 3, 100000.00, '2023-03-12', 'Daily Wages', '2023-2024'),
+(4, 4, 200000.00, '2023-04-18', 'Teaching', '2023-2024'),
+(5, 6, 300000.00, '2023-05-20', 'Software Development', '2023-2024');
+
+INSERT INTO expenditure (expenditure_id, citizen_id, amount, expenditure_date, purpose, category, payment_mode, financial_year)
+VALUES
+(1, 1, 2000.00, '2023-01-20', 'Fertilizers', 'Agriculture', 'Cash', '2023-2024'),
+(2, 2, 3000.00, '2023-02-15', 'Books', 'Education', 'Card', '2023-2024'),
+(3, 3, 1500.00, '2023-03-25', 'Groceries', 'Household', 'UPI', '2023-2024'),
+(4, 4, 5000.00, '2023-04-30', 'Rent', 'Housing', 'Net Banking', '2023-2024'),
+(5, 6, 8000.00, '2023-05-10', 'Laptop', 'Electronics', 'Online', '2023-2024');
+
+INSERT INTO service (service_id, name, description, type, status, request_date)
+VALUES
+(1, 'Electricity Connection', 'New electricity connection for rural area', 'Utility', 'Active', '2023-01-05'),
+(2, 'Water Supply', 'Repair water pipeline', 'Utility', 'Completed', '2023-02-10'),
+(3, 'Scholarship', 'Apply for student scholarship', 'Education', 'Pending', '2023-03-15'),
+(4, 'Healthcare Assistance', 'Request medical aid', 'Health', 'Completed', '2023-04-20'),
+(5, 'Road Repair', 'Fix potholes in locality', 'Infrastructure', 'Active', '2023-05-25');
+
+INSERT INTO service_requests (request_id, citizen_id, service_id, request_date, status)
+VALUES
+(1, 1, 1, '2023-01-10', 'Approved'),
+(2, 2, 2, '2022-02-15', 'Completed'),
+(3, 3, 4, '2020-03-20', 'In Progress'),
+(4, 4, 4, '2025-04-25', 'Completed'),
+(5, 5, 5, '2024-11-10', 'Pending');
