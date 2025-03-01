@@ -30,12 +30,9 @@ WHERE l.area_acres > 1;
 SELECT c.first_name, c.last_name
 FROM citizens c
 WHERE c.household_id = (
-    SELECT p.household_id
-    FROM panchayat_employees p
-    JOIN citizens pc ON p.citizen_id = pc.citizen_id
-    WHERE p.role = 'Sarpanch'
+    SELECT household_id FROM citizens
+    WHERE citizen_id = (SELECT citizen_id FROM panchayat_employees WHERE role = 'Sarpanch')
 );
-
 
 SELECT COUNT(*) AS total_street_lights
 FROM assets
@@ -56,15 +53,10 @@ FROM citizens c
 WHERE  gender = 'Male'
   AND EXTRACT(YEAR FROM c.date_of_birth) = 2024;
 
-SELECT COUNT(*) AS total_boy_births
-FROM citizens
-WHERE gender = 'Male'
-  AND YEAR(date_of_birth) = 1995; --mysql
-
 SELECT COUNT(DISTINCT c.citizen_id) AS total_citizens
 FROM citizens c
 WHERE c.household_id IN (
-    SELECT DISTINCT p.household_id
+    SELECT DISTINCT household_id
     FROM panchayat_employees p
     JOIN citizens pc ON p.citizen_id = pc.citizen_id
 );

@@ -52,7 +52,8 @@ FROM vaccinations v
 JOIN citizens child ON v.citizen_id = child.citizen_id
 JOIN citizens parent ON child.household_id = parent.household_id
 WHERE EXTRACT(YEAR FROM v.date) = 2024
-  AND parent.educational_qualification = '10th Class';
+  AND parent.educational_qualification = '10th Class'
+  AND child.age < 18;
 
 -- I. Male births in 2024
 SELECT COUNT(*) AS total_boy_births

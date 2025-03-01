@@ -4,11 +4,10 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
+#include <unistd.h>
 
 using namespace std;
 
-//----------------------------------------------------------------------
-// Utility function to print a horizontal line for table formatting.
 void printTableLine(const vector<int> &widths)
 {
     cout << "+";
@@ -79,9 +78,6 @@ void executeSelectQuery(pqxx::connection &conn, const string &query, int queryNu
     }
 }
 
-//----------------------------------------------------------------------
-// Executes a non-SELECT SQL command (such as DROP, CREATE, or INSERT)
-// and prints a message indicating its success or failure.
 void executeNonSelectQuery(pqxx::connection &conn, const string &query, int queryNum, const string &successMessage)
 {
     try
@@ -97,9 +93,6 @@ void executeNonSelectQuery(pqxx::connection &conn, const string &query, int quer
     }
 }
 
-//----------------------------------------------------------------------
-// Main function: connects to the database, drops existing tables,
-// creates new tables, inserts data, and then executes SELECT queries.
 int main()
 {
     try
@@ -113,6 +106,7 @@ int main()
             "port=5432");
         cout << "Database connected successfully.\n\n";
 
+       sleep(1);
         int queryNum = 0;
 
         // --- DROP TABLES ---
@@ -139,6 +133,7 @@ int main()
             executeNonSelectQuery(conn, q, queryNum, "Tables dropped.");
         }
         cout << "All tables dropped successfully.\n\n";
+        sleep(1);
 
         // --- CREATE TABLES ---
         // Grouping all CREATE TABLE statements.
@@ -298,7 +293,7 @@ int main()
             executeNonSelectQuery(conn, p.first, queryNum, p.second);
         }
         cout << "All tables created successfully.\n\n";
-
+        sleep(1);
         // --- INSERT DATA ---
         // Grouping all INSERT commands.
         vector<pair<string, string>> insertQueries = {
@@ -425,7 +420,7 @@ int main()
             executeNonSelectQuery(conn, p.first, queryNum, p.second);
         }
         cout << "Data inserted successfully.\n\n";
-
+        
         // --- SELECT QUERIES ---
         // Grouping SELECT queries.
         vector<pair<string, string>> selectQueries = {

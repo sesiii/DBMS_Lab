@@ -246,9 +246,9 @@ def main():
              (2, 'Community Hall', 50000, 'Phulera', 'Market Light', '2024-02-20'), 
              (3, 'Street Light', 50000, 'Phulera', 'School Light', '2024-03-10');""", "Data inserted into Assets."),
         ("""INSERT INTO vaccinations VALUES 
-             (1, 6, 'COVID-19', '2024-01-15'), 
-             (2, 7, 'COVID-19', '2024-02-20'), 
-             (3, 8, 'COVID-19', '2024-03-10'), 
+             (1, 6, 'Polio', '2024-01-15'), 
+             (2, 7, 'Polio', '2024-02-20'), 
+             (3, 8, 'Polio', '2024-03-10'), 
              (4, 13, 'Polio', '2024-04-01');""", "Data inserted into Vaccinations."),
         ("""INSERT INTO welfare_schemes VALUES 
              (1, 'Pradhan Mantri Awas Yojana', 'Housing for All', 'Below Poverty Line Families', 'Free Housing', '2022-01-01', '2024-12-31'), 

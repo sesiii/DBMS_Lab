@@ -49,7 +49,7 @@ INSERT INTO assets VALUES
 (3, 'Street Light', 50000, 'Phulera', 'School Light', '2024-03-10');
 
 INSERT INTO vaccinations VALUES
-(1, 6, 'COVID-19', '2024-01-15'),
-(2, 7, 'COVID-19', '2024-02-20'),
-(3, 8, 'COVID-19', '2024-03-10'),
-(4, 13, 'Polio', '2024-04-01');  -- 2024-born child
+(1, 6, 'Polio', '2024-01-15'),
+(2, 7, 'Polio', '2024-02-20'),
+(3, 8, 'Polio', '2024-03-10'),
+(4, 13, 'Polio', '2024-04-01');  

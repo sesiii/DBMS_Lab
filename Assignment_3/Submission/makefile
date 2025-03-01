@@ -3,10 +3,10 @@ runcpp:
 	./db
 
 runpy:
-	python -m venv myenv
-	source venv/bin/activate
-	pip install psycopg2-binary
-	pip install tabulate
+	# python -m venv myenv
+	# source myenv/bin/activate
+	# pip install psycopg2-binary
+	# pip install tabulate
 	python3 db.py
 
 compilejava:

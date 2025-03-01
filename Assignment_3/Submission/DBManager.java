@@ -245,9 +245,9 @@ public class DBManager {
                     "(3, 'Street Light', 50000, 'Phulera', 'School Light', '2024-03-10');",
 
                 "INSERT INTO vaccinations VALUES " +
-                    "(1, 6, 'COVID-19', '2024-01-15'), " +
-                    "(2, 7, 'COVID-19', '2024-02-20'), " +
-                    "(3, 8, 'COVID-19', '2024-03-10'), " +
+                    "(1, 6, 'Polio', '2024-01-15'), " +
+                    "(2, 7, 'Polio', '2024-02-20'), " +
+                    "(3, 8, 'Polio', '2024-03-10'), " +
                     "(4, 13, 'Polio', '2024-04-01');",
 
                 "INSERT INTO welfare_schemes VALUES " +
@@ -327,7 +327,7 @@ public class DBManager {
             System.out.println("Executing SELECT queries...");
             for (String q : selectQueries) {
                 queryNum++;
-                System.out.println("\n=== Query " + queryNum + " ===");
+                // System.out.println("\n=== Query " + queryNum + " ===");
                 try (ResultSet rs = stmt.executeQuery(q)) {
                     List<String[]> rows = new ArrayList<>();
                     ResultSetMetaData rsmd = rs.getMetaData();
@@ -362,13 +362,6 @@ public class DBManager {
         }
     }
 
-    /**
-     * Utility method to print a table with headers and formatted columns.
-     *
-     * @param headers   Array of header strings.
-     * @param rows      List of rows (each row is a String array).
-     * @param colWidths Array of column widths.
-     */
     public static void printTable(String[] headers, List<String[]> rows, int[] colWidths) {
         // Build a border line.
         StringBuilder border = new StringBuilder("+");
