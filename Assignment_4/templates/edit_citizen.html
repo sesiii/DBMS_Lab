@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Citizen Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        main {
+            padding: 2em;
+            max-width: 600px;
+            margin: 2em auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1em;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.5em;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.7em 1.5em;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        footer {
+            text-align: center;
+            padding: 1em 0;
+            background-color: #f1f1f1;
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Edit Citizen Information</h1>
+    </header>
+    <main>
+        <form method="POST">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" value="{{ citizen_details.first_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" value="{{ citizen_details.last_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" value="{{ citizen_details.date_of_birth }}" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" value="{{ citizen_details.phone_number }}" required>
+            </div>
+            <div class="form-group">
+                <label for="caste">Caste:</label>
+                <input type="text" id="caste" name="caste" value="{{ citizen_details.caste }}">
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="Male" {% if citizen_details.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if citizen_details.gender == 'Female' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if citizen_details.gender == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="household_id">Household ID:</label>
+                <input type="number" id="household_id" name="household_id" value="{{ citizen_details.household_id }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="educational_qualification">Educational Qualifications:</label>
+                <select class="form-select" id="educational_qualification" name="educational_qualification" required>
+                    <option value="">Select</option>
+                    <option value="none" {% if citizen_details.educational_qualification == 'none' %}selected{% endif %}>None</option>
+                    <option value="primary" {% if citizen_details.educational_qualification == 'primary' %}selected{% endif %}>Primary Education</option>
+                    <option value="secondary" {% if citizen_details.educational_qualification == 'secondary' %}selected{% endif %}>Secondary Education</option>
+                    <option value="higher_secondary" {% if citizen_details.educational_qualification == 'higher_secondary' %}selected{% endif %}>Higher Secondary</option>
+                    <option value="graduate" {% if citizen_details.educational_qualification == 'graduate' %}selected{% endif %}>Graduate</option>
+                    <option value="postgraduate" {% if citizen_details.educational_qualification == 'postgraduate' %}selected{% endif %}>Postgraduate</option>
+                    <option value="phd" {% if citizen_details.educational_qualification == 'phd' %}selected{% endif %}>PhD</option>
+                </select>
+                <input type="text" id="educational_qualification" name="educational_qualification" value="{{ citizen_details.educational_qualification }}">
+            </div>
+            <div class="form-group">
+                <label for="occupation">Occupation:</label>
+                <input type="text" id="occupation" name="occupation" value="{{ citizen_details.occupation }}">
+            </div>
+            <div class="form-group">
+                <label for="marital_status">Marital Status:</label>
+                <select id="marital_status" name="marital_status">
+                    <option value="Single" {% if citizen_details.marital_status == 'Single' %}selected{% endif %}>Single</option>
+                    <option value="Married" {% if citizen_details.marital_status == 'Married' %}selected{% endif %}>Married</option>
+                    <option value="Divorced" {% if citizen_details.marital_status == 'Divorced' %}selected{% endif %}>Divorced</option>
+                    <option value="Widowed" {% if citizen_details.marital_status == 'Widowed' %}selected{% endif %}>Widowed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit">Update</button>
+                <button type="button" onclick="location.href='/citizen'">Cancel</button>
+            </div>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2023 Citizen Database</p>
+    </footer>
+</body>
+</html>

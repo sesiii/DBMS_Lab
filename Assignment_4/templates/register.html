@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="en"></html>
+<html lang="en">
+
+</html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register | Gram Panchayat Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-light">
-    
+
     <!-- Header with Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
         <div class="container">
@@ -25,7 +29,8 @@
             <form method="POST" action="{{ url_for('register')}}" onsubmit="return validateForm()">
                 <div class="mb-3">
                     <label class="form-label">Aadhar Number</label>
-                    <input type="text" class="form-control" id="aadhar" name="aadhar_no" pattern="\d{12}" maxlength="12" required>
+                    <input type="text" class="form-control" id="aadhar" name="aadhar_no" pattern="\d{12}" maxlength="12"
+                        required>
                     <small class="text-muted">Must be a 12-digit unique number.</small>
                 </div>
                 <div class="row">
@@ -44,7 +49,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Phone Number</label>
-                    <input type="text" class="form-control" id="phone" name="phone" pattern="\d{10}" maxlength="10" required>
+                    <input type="text" class="form-control" id="phone" name="phone" pattern="\d{10}" maxlength="10"
+                        required>
                     <small class="text-muted">Must be a 10-digit number.</small>
                 </div>
                 <div class="row">
@@ -64,7 +70,9 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Household ID</label>
-                    <input type="text" class="form-control" name="household_id" required>
+                    <input type="text" class="form-control" name="household_id" pattern="\d{6}" minlength="6"
+                        maxlength="6" required>
+                    <small class="text-muted">Must be atleast 6-digit number.</small>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Educational Qualifications</label>
@@ -107,12 +115,12 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3 mt-5">
         &copy; 2025 Gram Panchayat Management System | All Rights Reserved
     </footer>
-    
+
     <script>
         function validateForm() {
             let aadhar = document.getElementById("aadhar").value;
@@ -145,4 +153,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

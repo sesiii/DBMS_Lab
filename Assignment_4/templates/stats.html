@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population Statistics Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 1.5rem;
+        }
+
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-header {
+            background-color: #f1f5f9;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <div class="container-fluid py-4">
+        <!-- Stats Header with DateTime and User Info -->
+        <div class="stats-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2><i class="fas fa-chart-pie me-2"></i>Population Statistics Dashboard</h2>
+                <div class="text-muted">
+                    <div><i class="fas fa-calendar-alt me-1"></i>{{ current_datetime }}</div>
+                    <div><i class="fas fa-user me-1"></i>{{ current_user }}</div>
+                </div>
+                <a href="{{ url_for('home') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-home me-1"></i>Home
+                </a>
+            </div>
+        </div>
+
+        <!-- Global Search and Filters - SINGLE CONSOLIDATED FORM -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Global Filters</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('stats') }}" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Global Search</label>
+                        <input type="text" class="form-control" name="global_search"
+                            value="{{ selected_filters.global_search or '' }}"
+                            placeholder="Search across all fields...">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Gender</label>
+                        <select class="form-select" name="gender_filter">
+                            <option value="">All Genders</option>
+                            {% for gender in filter_options.gender %}
+                            <option value="{{ gender[0] }}" {% if selected_filters.gender_filter==gender[0] %}selected{%
+                                endif %}>
+                                {{ gender[0] or 'Not Specified' }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Education Level</label>
+                        <select class="form-select" name="education_filter">
+                            <option value="">All Education Levels</option>
+                            {% for edu in filter_options.education %}
+                            <option value="{{ edu[0] }}" {% if selected_filters.education_filter==edu[0] %}selected{%
+                                endif %}>
+                                {{ edu[0] or 'Not Specified' }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Group By</label>
+                        <select class="form-select" name="global_group_by">
+                            {% for value, label in available_columns %}
+                            <option value="{{ value }}" {% if selected_filters.group_by==value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Birth Year Range</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="year_from"
+                                value="{{ selected_filters.year_from or '' }}" placeholder="From Year">
+                            <input type="number" class="form-control" name="year_to"
+                                value="{{ selected_filters.year_to or '' }}" placeholder="To Year">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Age Filter</label>
+                        <select class="form-select" name="age_filter">
+                            <option value="">All Age Groups</option>
+                            <option value="0-14" {% if selected_filters.age_filter=="0-14" %}selected{% endif %}>0-14
+                                years</option>
+                            <option value="15-24" {% if selected_filters.age_filter=="15-24" %}selected{% endif %}>15-24
+                                years</option>
+                            <option value="25-54" {% if selected_filters.age_filter=="25-54" %}selected{% endif %}>25-54
+                                years</option>
+                            <option value="55-64" {% if selected_filters.age_filter=="55-64" %}selected{% endif %}>55-64
+                                years</option>
+                            <option value="65+" {% if selected_filters.age_filter=="65+" %}selected{% endif %}>65+ years
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-filter me-1"></i>Apply Filters
+                        </button>
+                        <a href="{{ url_for('stats') }}" class="btn btn-secondary">
+                            <i class="fas fa-undo me-1"></i>Reset Filters
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h6 class="card-title">Total Population</h6>
+                        <h2 class="mb-0">{{ total_population }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h6 class="card-title">Literacy Rate</h6>
+                        <h2 class="mb-0">{{ literacy_rate }}%</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h6 class="card-title">Average Age</h6>
+                        <h2 class="mb-0">{{ avg_age }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <h6 class="card-title">Total Households</h6>
+                        <h2 class="mb-0">{{ total_households }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Statistics -->
+        <div class="row">
+            <!-- Gender Distribution -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-venus-mars me-2"></i>Gender Distribution</h5>
+                        <button class="btn btn-sm btn-outline-primary export-csv" type="button" data-table="gender"
+                            data-filename="gender_distribution">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" data-table="gender">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Gender</th>
+                                        {% if selected_group_by %}
+                                        <th>{{ selected_group_by|title|replace('_', ' ') }}</th>
+                                        {% endif %}
+                                        <th>Count</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in gender_stats %}
+                                    <tr>
+                                        <td>{{ stat.gender }}</td>
+                                        {% if selected_group_by %}
+                                        <td>{{ stat[1] }}</td>
+                                        {% endif %}
+                                        <td>{{ stat.count }}</td>
+                                        <td>{{ "%.2f"|format(stat.count / total_population * 100) }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Age Distribution -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-user-clock me-2"></i>Age Distribution</h5>
+                        <button class="btn btn-sm btn-outline-primary export-csv" type="button" data-table="age"
+                            data-filename="age_distribution">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" data-table="age">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Age Group</th>
+                                        {% if selected_group_by %}
+                                        <th>{{ selected_group_by|title|replace('_', ' ') }}</th>
+                                        {% endif %}
+                                        <th>Count</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in age_stats %}
+                                    <tr>
+                                        <td>{{ stat.age_group }}</td>
+                                        {% if selected_group_by %}
+                                        <td>{{ stat[1] }}</td>
+                                        {% endif %}
+                                        <td>{{ stat.count }}</td>
+                                        <td>{{ "%.2f"|format(stat.count / total_population * 100) }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Distribution -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Education Distribution</h5>
+                        <button class="btn btn-sm btn-outline-primary export-csv" type="button" data-table="education"
+                            data-filename="education_distribution">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" data-table="education">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Education Level</th>
+                                        {% if selected_group_by %}
+                                        <th>{{ selected_group_by|title|replace('_', ' ') }}</th>
+                                        {% endif %}
+                                        <th>Count</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in education_stats %}
+                                    <tr>
+                                        <td>{{ stat.education }}</td>
+                                        {% if selected_group_by %}
+                                        <td>{{ stat[1] }}</td>
+                                        {% endif %}
+                                        <td>{{ stat.count }}</td>
+                                        <td>{{ "%.2f"|format(stat.count / total_population * 100) }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Birth Rate Trends -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-baby me-2"></i>Birth Rate Trends</h5>
+                        <button class="btn btn-sm btn-outline-primary export-csv" type="button" data-table="birth_rate"
+                            data-filename="birth_rate_trends">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" data-table="birth_rate">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Year</th>
+                                        {% if selected_group_by %}
+                                        <th>{{ selected_group_by|title|replace('_', ' ') }}</th>
+                                        {% endif %}
+                                        <th>Birth Count</th>
+                                        <th>Percentage of Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in birth_rate_stats %}
+                                    <tr>
+                                        <td>{{ stat.year|int }}</td>
+                                        {% if selected_group_by %}
+                                        <td>{{ stat[1] }}</td>
+                                        {% endif %}
+                                        <td>{{ stat.birth_count }}</td>
+                                        <td>{{ "%.2f"|format(stat.birth_count / total_population * 100) }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Filters and Interactivity -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to export table data to CSV
+            function exportTableToCSV(tableId, filename) {
+                const table = document.querySelector(`table[data-table="${tableId}"]`);
+                const rows = table.querySelectorAll('tr');
+                const csv = [];
+
+                for (const row of rows) {
+                    const rowData = [];
+                    const cols = row.querySelectorAll('td, th');
+
+                    for (const col of cols) {
+                        rowData.push('"' + col.innerText.replace(/"/g, '""') + '"');
+                    }
+
+                    csv.push(rowData.join(','));
+                }
+
+                const csvContent = 'data:text/csv;charset=utf-8,' + csv.join('\n');
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement('a');
+                link.setAttribute('href', encodedUri);
+                link.setAttribute('download', `${filename}_${new Date().toISOString().slice(0, 19).replace(/[T:]/g, '_')}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            // Add export buttons event listeners
+            document.querySelectorAll('.export-csv').forEach(button => {
+                button.addEventListener('click', function () {
+                    const tableId = this.dataset.table;
+                    const filename = this.dataset.filename;
+                    exportTableToCSV(tableId, filename);
+                });
+            });
+
+            // Initialize tooltips if Bootstrap's tooltip is available
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+        });
+    </script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

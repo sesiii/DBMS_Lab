@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ table_name | title }} Data</title>
+</head>
+
+<body>
+    <h2>{{ table_name | title }}</h2>
+
+    {% if table_data %}
+    <table border="1">
+        <thead>
+            <tr>
+                {% for column in table_data[0].keys() %}
+                <th>{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+            <tr>
+                {% for value in row.values() %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No data available for {{ table_name }}</p>
+    {% endif %}
+
+    <a href="{{ url_for('panchayat_employee_dashboard') }}">Back to Dashboard</a>
+</body>
+
+</html>

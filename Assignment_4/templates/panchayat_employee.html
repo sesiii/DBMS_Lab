@@ -1,37 +1,712 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panchayat Employee</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Panchayat Employee Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .nav-tabs .nav-link.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .current-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .form-section {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .table-responsive {
+            margin-top: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-badge {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .btn-custom-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f5fff5;
+        }
+    </style>
 </head>
+
 <body>
-    <header>
-        <h1>Panchayat Employee Details</h1>
-    </header>
-    <main>
-        <section>
-            <h2>Employee Information</h2>
-            <form action="/submit_employee_details" method="post">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required><br><br>
-                
-                <label for="age">Age:</label>
-                <input type="number" id="age" name="age" required><br><br>
-                
-                <label for="position">Position:</label>
-                <input type="text" id="position" name="position" required><br><br>
-                
-                <label for="contact">Contact:</label>
-                <input type="text" id="contact" name="contact" required><br><br>
-                
-                <input type="submit" value="Submit">
-            </form>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2023 Panchayat Office</p>
-    </footer>
+    <div class="container-fluid py-4">
+        <!-- Header Section -->
+        <div class="header-card">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 mb-0">Panchayat Employee Dashboard</h1>
+                    <p class="lead mb-0">Welcome, {{ citizen_details.first_name }} {{ citizen_details.last_name }}</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="current-info">
+
+                        <div class="info-badge">
+                            <i class="fas fa-user"></i>
+                            <strong>User:</strong> {{ citizen_details.first_name }} {{ citizen_details.last_name }}
+                        </div>
+                        <div class="info-badge">
+                            <i class="fas fa-id-badge"></i>
+                            <strong>Employee ID:</strong> {{ citizen_details.user_id }}
+                        </div>
+                        <div class="info-badge"></div>
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="{{ url_for('logout') }}" class="text-decoration-none text-dark">
+                            <strong>Logout</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation and Content Section -->
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="forms-tab" data-bs-toggle="tab" href="#forms" role="tab">
+                        <i class="fas fa-edit"></i> Data Entry Forms
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="view-tab" data-bs-toggle="tab" href="#view" role="tab">
+                        <i class="fas fa-table"></i> View Records
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+                <!-- Forms Tab -->
+                <div class="tab-pane fade show active" id="forms" role="tabpanel">
+                    <div class="accordion" id="formsAccordion">
+                        <!-- Environmental Data Form -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#environmentalForm">
+                                    <i class="fas fa-leaf"></i> Environmental Data Entry
+                                </button>
+                            </h2>
+                            <div id="environmentalForm" class="accordion-collapse collapse"
+                                data-bs-parent="#formsAccordion">
+                                <div class="accordion-body">
+                                    <form action="{{ url_for('add_environmental_data') }}" method="POST"
+                                        class="needs-validation" novalidate>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Issue Type</label>
+                                                    <select class="form-select" name="issue_type" required>
+                                                        <option value="Air Quality">Air Quality</option>
+                                                        <option value="Water Quality">Water Quality</option>
+                                                        <option value="Soil Quality">Soil Quality</option>
+                                                        <option value="Waste Management">Waste Management</option>
+                                                        <option value="Noise Pollution">Noise Pollution</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description</label>
+                                                    <textarea class="form-control" name="description" rows="3"
+                                                        required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Rainfall (mm)</label>
+                                                    <input type="number" step="0.01" class="form-control"
+                                                        name="rainfall">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Groundwater Level (m)</label>
+                                                    <input type="number" step="0.01" class="form-control"
+                                                        name="groundwater_level">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Pollution Data</label>
+                                                    <textarea class="form-control" name="pollution_data"
+                                                        rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-custom-primary">Submit Environmental
+                                            Data</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Census Form -->
+                        <!-- Census Form -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#censusForm">
+                                    <i class="fas fa-users"></i> Census Data Entry
+                                </button>
+                            </h2>
+                            <div id="censusForm" class="accordion-collapse collapse" data-bs-parent="#formsAccordion">
+                                <div class="accordion-body">
+                                    <form action="{{ url_for('add_census') }}" method="POST" class="needs-validation"
+                                        novalidate>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Year</label>
+                                                    <input type="number" class="form-control" name="year" required
+                                                        min="2020" max="2025">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Population</label>
+                                                    <input type="number" class="form-control" name="population"
+                                                        required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Demographics</label>
+                                                    <textarea class="form-control" name="demographics" rows="3"
+                                                        required></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description</label>
+                                                    <textarea class="form-control" name="description"
+                                                        rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-custom-primary">Submit Census
+                                            Data</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Welfare Scheme Form -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#schemeForm">
+                                    <i class="fas fa-hands-helping"></i> Welfare Scheme Entry
+                                </button>
+                            </h2>
+                            <div id="schemeForm" class="accordion-collapse collapse" data-bs-parent="#formsAccordion">
+                                <div class="accordion-body">
+                                    <form action="{{ url_for('add_welfare_scheme') }}" method="POST"
+                                        class="needs-validation" novalidate>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Scheme Name</label>
+                                                    <input type="text" class="form-control" name="name" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description</label>
+                                                    <textarea class="form-control" name="description" rows="3"
+                                                        required></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Eligibility Criteria</label>
+                                                    <textarea class="form-control" name="eligibility" rows="3"
+                                                        required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Benefits</label>
+                                                    <textarea class="form-control" name="benefits" rows="3"
+                                                        required></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Start Date</label>
+                                                    <input type="date" class="form-control" name="start_date" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">End Date</label>
+                                                    <input type="date" class="form-control" name="end_date">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-custom-primary">Submit Welfare
+                                            Scheme</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service Form -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#serviceForm">
+                                    <i class="fas fa-cogs"></i> Service Entry
+                                </button>
+                            </h2>
+                            <div id="serviceForm" class="accordion-collapse collapse" data-bs-parent="#formsAccordion">
+                                <div class="accordion-body">
+                                    <form action="{{ url_for('add_service') }}" method="POST" class="needs-validation"
+                                        novalidate>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Service Type</label>
+                                                    <input type="text" class="form-control" name="type" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Status</label>
+                                                    <select class="form-select" name="status" required>
+                                                        <option value="Active">Active</option>
+                                                        <option value="Inactive">Inactive</option>
+                                                        <option value="Maintenance">Maintenance</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-custom-primary">Submit Service</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- View Data Tab -->
+                <div class="tab-pane fade" id="view" role="tabpanel">
+                    <div class="mb-4">
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for table in tables %}
+                            <button onclick="viewTable('{{ table }}')"
+                                class="btn {% if active_table and active_table.name == table %}btn-success{% else %}btn-outline-success{% endif %}">
+                                {{ table | title | replace('_', ' ') }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Add search box -->
+                    {% if active_table %}
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="tableSearch"
+                                placeholder="Search in {{ active_table.name | title | replace('_', ' ') }}...">
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="table-responsive mt-4">
+                        {% if active_table %}
+                        <h3>{{ active_table.name | title | replace('_', ' ') }}</h3>
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    {% for column in active_table.columns %}
+                                    <th>{{ column | title | replace('_', ' ') }}</th>
+                                    {% endfor %}
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in active_table.rows %}
+                                <tr>
+                                    {% for cell in row %}
+                                    <td>{{ cell }}</td>
+                                    {% endfor %}
+                                    <td class="action-buttons">
+                                        {% if active_table.name == 'welfare_schemes' %}
+                                        <a href="{{ url_for('edit_welfare_scheme', scheme_id=row[0]) }}"
+                                            class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        {% elif active_table.name == 'environmental_data' %}
+                                        <a href="{{ url_for('edit_environmental_data', data_id=row[0]) }}"
+                                            class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        {% elif active_table.name == 'census' %}
+                                        <a href="{{ url_for('edit_census', id=row[0]) }}"
+                                            class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        {% elif active_table.name == 'service' %}
+                                        <a href="{{ url_for('edit_service', id=row[0]) }}"
+                                            class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        {% elif active_table.name == 'expenditure' %}
+                                        <a href="{{ url_for('edit_expenditure', id=row[0]) }}"
+                                            class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        {% elif active_table.name == 'vaccinations' %}
+
+                                        {% elif active_table.name == 'tax' %}
+
+                                        {% elif active_table.name == 'income' %}
+
+                                        {% elif active_table.name == 'citizens' %}
+
+                                        {% elif active_table.name == 'service_requests' %}
+
+
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="alert alert-info">
+                            Please select a table from the options above to view its records.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <!-- Environmental Data Edit Modal -->
+    <div class="modal fade" id="editEnvironmentalModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Environmental Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-env-form" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Issue Type</label>
+                                    <select class="form-select" id="edit-issue-type" name="issue_type" required>
+                                        <option value="Air Quality">Air Quality</option>
+                                        <option value="Water Quality">Water Quality</option>
+                                        <option value="Soil Quality">Soil Quality</option>
+                                        <option value="Waste Management">Waste Management</option>
+                                        <option value="Noise Pollution">Noise Pollution</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" id="edit-description" name="description" rows="3"
+                                        required></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Rainfall (mm)</label>
+                                    <input type="number" step="0.01" class="form-control" id="edit-rainfall"
+                                        name="rainfall">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Groundwater Level (m)</label>
+                                    <input type="number" step="0.01" class="form-control" id="edit-groundwater"
+                                        name="groundwater_level">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Pollution Data</label>
+                                    <textarea class="form-control" id="edit-pollution" name="pollution_data"
+                                        rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-warning">Update Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Update current time display
+        $(document).ready(function () {
+            // Set initial time
+            $('#current-time').text('2025-03-01 19:04:32');
+
+            // Update time every second
+            setInterval(function () {
+                var time = $('#current-time').text();
+                var date = new Date(time);
+                date.setSeconds(date.getSeconds() + 1);
+                $('#current-time').text(date.toISOString().slice(0, 19).replace('T', ' '));
+            }, 1000);
+
+            // Initialize tooltips
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+
+        // Table editing functions
+        function editWelfareScheme(id) {
+            window.location.href = `/edit_welfare_scheme/${id}`;
+        }
+
+        function editEnvironmentalData(id) {
+            window.location.href = `/edit_environmental_data/${id}`;
+        }
+
+        function editCensus(id) {
+            window.location.href = `/edit_census/${id}`;
+        }
+
+        function editService(id) {
+            window.location.href = `/edit_service/${id}`;
+        }
+
+        // Form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+
+        // Add this in your existing script section
+        function viewTable(tableName) {
+            // Switch to the view tab first
+            $('#view-tab').tab('show');
+
+            // Navigate to the table view
+            window.location.href = "{{ url_for('panchayat_employee_table') }}?table_name=" + tableName;
+        }
+
+        // Add this function for editing environmental data
+        function editEnvironmentalData(id) {
+            $('#editEnvironmentalModal').modal('show');
+            fetch(`/get_environmental_data/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('edit-env-form').action = `/edit_environmental_data/${id}`;
+                    document.getElementById('edit-issue-type').value = data.issue_type;
+                    document.getElementById('edit-description').value = data.description;
+                    document.getElementById('edit-rainfall').value = data.rainfall;
+                    document.getElementById('edit-groundwater').value = data.groundwater_level;
+                    document.getElementById('edit-pollution').value = data.pollution_data;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Update these functions in your script section
+        function editWelfareScheme(schemeId) {
+            fetch(`/get_welfare_scheme/${schemeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('edit-scheme-form').action = `/update_welfare_scheme/${schemeId}`;
+                    document.getElementById('edit-scheme-name').value = data.name;
+                    document.getElementById('edit-scheme-description').value = data.description;
+                    document.getElementById('edit-scheme-eligibility').value = data.eligibility;
+                    document.getElementById('edit-scheme-benefits').value = data.benefits;
+                    document.getElementById('edit-scheme-start-date').value = data.start_date;
+                    document.getElementById('edit-scheme-end-date').value = data.end_date;
+                    $('#editWelfareSchemeModal').modal('show');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching scheme details');
+                });
+        }
+
+        // Update time display function
+        $(document).ready(function () {
+            // Set initial time
+            $('#current-time').text('2025-03-01 19:19:23');
+
+            // Update time every second
+            setInterval(function () {
+                var time = $('#current-time').text();
+                var date = new Date(time);
+                date.setSeconds(date.getSeconds() + 1);
+                var formattedTime = date.getFullYear() + '-' +
+                    String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(date.getDate()).padStart(2, '0') + ' ' +
+                    String(date.getHours()).padStart(2, '0') + ':' +
+                    String(date.getMinutes()).padStart(2, '0') + ':' +
+                    String(date.getSeconds()).padStart(2, '0');
+                $('#current-time').text(formattedTime);
+            }, 1000);
+
+            // Check if we should show the view tab
+            if (window.location.search.includes('table_name')) {
+                $('#view-tab').tab('show');
+            }
+        });
+        // Add this to your existing script section
+        function searchTable() {
+            let input = document.getElementById('tableSearch');
+            let filter = input.value.toLowerCase();
+            let table = document.querySelector('.table');
+            let tr = table.getElementsByTagName('tr');
+
+            // Loop through all table rows, starting from index 1 to skip the header
+            for (let i = 1; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName('td');
+                let found = false;
+
+                // Loop through all cells in the row
+                for (let j = 0; j < td.length - 1; j++) { // -1 to exclude the Actions column
+                    let cell = td[j];
+                    if (cell) {
+                        let textValue = cell.textContent || cell.innerText;
+                        if (textValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Show/hide the row based on whether the search term was found
+                tr[i].style.display = found ? '' : 'none';
+            }
+        }
+
+        // Add event listener to search input
+        document.addEventListener('DOMContentLoaded', function () {
+            let searchInput = document.getElementById('tableSearch');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', searchTable);
+            }
+        });
+
+        // Update the viewTable function to ensure search functionality is initialized after table load
+        function viewTable(tableName) {
+            // Switch to the view tab first
+            $('#view-tab').tab('show');
+
+            // Navigate to the table view
+            window.location.href = "{{ url_for('panchayat_employee_table') }}?table_name=" + tableName;
+
+            // Initialize search functionality after table load
+            document.addEventListener('DOMContentLoaded', function () {
+                let searchInput = document.getElementById('tableSearch');
+                if (searchInput) {
+                    searchInput.addEventListener('keyup', searchTable);
+                }
+            });
+        }
+
+    </script>
+
+    <!-- Welfare Scheme Edit Modal -->
+    <div class="modal fade" id="editWelfareSchemeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">Edit Welfare Scheme</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-scheme-form" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Scheme Name</label>
+                                    <input type="text" class="form-control" id="edit-scheme-name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" id="edit-scheme-description" name="description"
+                                        rows="3" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Eligibility Criteria</label>
+                                    <textarea class="form-control" id="edit-scheme-eligibility" name="eligibility"
+                                        rows="3" required></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Benefits</label>
+                                    <textarea class="form-control" id="edit-scheme-benefits" name="benefits" rows="3"
+                                        required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="edit-scheme-start-date"
+                                        name="start_date" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="edit-scheme-end-date" name="end_date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-warning">Update Scheme</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
