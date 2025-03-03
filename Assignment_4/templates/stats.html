@@ -203,7 +203,7 @@
                                     <tr>
                                         <td>{{ stat.gender }}</td>
                                         {% if selected_group_by %}
-                                        <td>{{ stat[1] }}</td>
+                                        <td>{{ stat.group_value }}</td>
                                         {% endif %}
                                         <td>{{ stat.count }}</td>
                                         <td>{{ "%.2f"|format(stat.count / total_population * 100) }}%</td>
@@ -244,7 +244,7 @@
                                     <tr>
                                         <td>{{ stat.age_group }}</td>
                                         {% if selected_group_by %}
-                                        <td>{{ stat[1] }}</td>
+                                        <td>{{ stat.group_value }}</td>
                                         {% endif %}
                                         <td>{{ stat.count }}</td>
                                         <td>{{ "%.2f"|format(stat.count / total_population * 100) }}%</td>
@@ -285,7 +285,7 @@
                                     <tr>
                                         <td>{{ stat.education }}</td>
                                         {% if selected_group_by %}
-                                        <td>{{ stat[1] }}</td>
+                                        <td>{{ stat.group_value }}</td>
                                         {% endif %}
                                         <td>{{ stat.count }}</td>
                                         <td>{{ "%.2f"|format(stat.count / total_population * 100) }}%</td>
@@ -326,7 +326,7 @@
                                     <tr>
                                         <td>{{ stat.year|int }}</td>
                                         {% if selected_group_by %}
-                                        <td>{{ stat[1] }}</td>
+                                        <td>{{ stat.group_value }}</td>
                                         {% endif %}
                                         <td>{{ stat.birth_count }}</td>
                                         <td>{{ "%.2f"|format(stat.birth_count / total_population * 100) }}%</td>

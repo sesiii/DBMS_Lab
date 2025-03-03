@@ -535,12 +535,12 @@ def logout():
         
     except Exception as e:
         print(e)
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
     
 
 @app.route('/')
 def home():
-    return render_template('home_1.html')
+    return render_template('home_2.html')
 
 @app.route('/edit_vaccination/<int:id>', methods=['GET', 'POST'])
 def edit_vaccination(id):
@@ -621,6 +621,162 @@ from decimal import Decimal
 from flask import Flask, render_template, jsonify
 from sqlalchemy import extract, func, case
 
+# @app.route('/stats')
+# def stats():    
+#     try:
+#         # Get filter parameters
+#         filters = {
+#             'gender_filter': request.args.get('gender_filter'),
+#             'education_filter': request.args.get('education_filter'),
+#             'age_filter': request.args.get('age_filter'),
+#             'year_from': request.args.get('year_from'),
+#             'year_to': request.args.get('year_to'),
+#             'global_search': request.args.get('global_search'),
+#             'group_by': request.args.get('global_group_by')
+#         }
+        
+#         # Debug log to see what filters are being received
+#         print(f"Received filters: {filters}")
+
+#         # Base query
+#         base_query = db.session.query(citizens)
+
+#         # Apply filters
+#         if filters['global_search']:
+#             search_term = f"%{filters['global_search']}%"
+#             base_query = base_query.filter(
+#                 or_(
+#                     citizens.first_name.ilike(search_term),
+#                     citizens.last_name.ilike(search_term),
+#                     citizens.gender.ilike(search_term),
+#                     citizens.educational_qualification.ilike(search_term),
+#                     citizens.occupation.ilike(search_term),
+#                     citizens.caste.ilike(search_term)
+#                 )
+#             )
+
+#         if filters['gender_filter']:
+#             base_query = base_query.filter(citizens.gender == filters['gender_filter'])
+
+#         if filters['education_filter']:
+#             base_query = base_query.filter(citizens.educational_qualification == filters['education_filter'])
+#         if filters['year_from'] and filters['year_to']:
+#             base_query = base_query.filter(
+#                 extract('year', citizens.date_of_birth).between(
+#                     int(filters['year_from']), 
+#                     int(filters['year_to'])
+#                 )
+#             )
+
+#         # Calculate basic stats from filtered query
+#         total_citizens = base_query.count()
+        
+#         # Calculate literacy rate
+#         citizens_with_no_education = base_query.filter(
+#             citizens.educational_qualification.ilike('%none%')
+#         ).count()
+#         literacy_rate = ((total_citizens - citizens_with_no_education) / total_citizens * 100) if total_citizens > 0 else 0
+
+#         # Calculate average age
+#         current_year = 2025
+#         avg_age = db.session.query(
+#             func.avg(current_year - extract('year', citizens.date_of_birth))
+#         ).select_from(base_query.subquery()).scalar() or 0
+
+#         # Count total households
+#         total_households = base_query.distinct(citizens.household_id).count()
+
+#         # Function to get grouped stats
+#         def get_grouped_stats(query, group_column):
+#             if filters['group_by'] and filters['group_by'] != 'none':
+#                 group_by_col = getattr(citizens, filters['group_by'])
+#                 return query.group_by(group_column, group_by_col).all()
+#             return query.group_by(group_column).all()
+
+#         # Gender Statistics
+#         gender_query = base_query.with_entities(
+#             case(
+#                 (citizens.gender.is_(None), 'Not Specified'),
+#                 else_=citizens.gender
+#             ).label('gender'),
+#             func.count(citizens.citizen_id).label('count')
+#         )
+#         gender_stats = get_grouped_stats(gender_query, 'gender')
+
+#         # Age Distribution
+#         age_query = base_query.with_entities(
+#             case(
+#                 (current_year - extract('year', citizens.date_of_birth) <= 14, '0-14'),
+#                 (current_year - extract('year', citizens.date_of_birth) <= 24, '15-24'),
+#                 (current_year - extract('year', citizens.date_of_birth) <= 54, '25-54'),
+#                 (current_year - extract('year', citizens.date_of_birth) <= 64, '55-64'),
+#                 else_='65+'
+#             ).label('age_group'),
+#             func.count(citizens.citizen_id).label('count')
+#         )
+#         age_stats = get_grouped_stats(age_query, 'age_group')
+
+#         # Education Distribution
+#         education_query = base_query.with_entities(
+#             case(
+#                 (citizens.educational_qualification.is_(None), 'Not Specified'),
+#                 else_=citizens.educational_qualification
+#             ).label('education'),
+#             func.count(citizens.citizen_id).label('count')
+#         )
+#         education_stats = get_grouped_stats(education_query, 'education')
+
+#         # Birth Rate Trends
+#         birth_rate_query = base_query.with_entities(
+#             extract('year', citizens.date_of_birth).label('year'),
+#             func.count(citizens.citizen_id).label('birth_count')
+#         )
+#         birth_rate_stats = get_grouped_stats(birth_rate_query, 'year')
+#         print(birth_rate_stats)
+#         # Get unique values for filter dropdowns
+#         filter_options = {
+#             'gender': db.session.query(citizens.gender).distinct().all(),
+#             'education': db.session.query(citizens.educational_qualification).distinct().all(),
+#             'caste': db.session.query(citizens.caste).distinct().all(),
+#             'occupation': db.session.query(citizens.occupation).distinct().all(),
+#             'birth_years': db.session.query(
+#                 extract('year', citizens.date_of_birth)
+#             ).distinct().order_by(
+#                 extract('year', citizens.date_of_birth)
+#             ).all()
+#         }
+
+#         # Available columns for grouping
+#         available_columns = [
+#             ('none', 'No Grouping'),
+#             ('gender', 'Gender'),
+#             ('educational_qualification', 'Education'),
+#             ('caste', 'Caste'),
+#             ('occupation', 'Occupation')
+#         ]
+
+#         return render_template(
+#             'stats.html',
+#             current_datetime="2025-03-02 11:36:54",
+#             current_user='',
+#             total_population=total_citizens,
+#             literacy_rate=round(literacy_rate, 2),
+#             avg_age=round(avg_age, 1),
+#             total_households=total_households,
+#             education_stats=education_stats,
+#             gender_stats=gender_stats,
+#             age_stats=age_stats,
+#             birth_rate_stats=birth_rate_stats,
+#             available_columns=available_columns,
+#             filter_options=filter_options,
+#             selected_filters=filters,  # Pass the filters to the template
+#             selected_group_by=filters['group_by']
+#         )
+
+#     except Exception as e:
+#         print(f"Error in stats route: {str(e)}")
+#         return f"An error occurred: {str(e)}", 500
+    
 @app.route('/stats')
 def stats():    
     try:
@@ -660,6 +816,25 @@ def stats():
 
         if filters['education_filter']:
             base_query = base_query.filter(citizens.educational_qualification == filters['education_filter'])
+            
+        if filters['age_filter']:
+            current_year = 2025
+            age_ranges = {
+                '0-14': (0, 14),
+                '15-24': (15, 24),
+                '25-54': (25, 54),
+                '55-64': (55, 64),
+                '65+': (65, 200)  # Upper bound for seniors
+            }
+            if filters['age_filter'] in age_ranges:
+                min_age, max_age = age_ranges[filters['age_filter']]
+                # Calculate birth years for the age range
+                max_birth_year = current_year - min_age
+                min_birth_year = current_year - max_age
+                base_query = base_query.filter(
+                    extract('year', citizens.date_of_birth).between(min_birth_year, max_birth_year)
+                )
+                
         if filters['year_from'] and filters['year_to']:
             base_query = base_query.filter(
                 extract('year', citizens.date_of_birth).between(
@@ -679,60 +854,124 @@ def stats():
 
         # Calculate average age
         current_year = 2025
-        avg_age = db.session.query(
+        avg_age_query = db.session.query(
             func.avg(current_year - extract('year', citizens.date_of_birth))
-        ).select_from(base_query.subquery()).scalar() or 0
+        )
+        filtered_subquery = base_query.with_entities(citizens.citizen_id).subquery()
+        avg_age = avg_age_query.filter(citizens.citizen_id.in_(filtered_subquery)).scalar() or 0
 
         # Count total households
         total_households = base_query.distinct(citizens.household_id).count()
 
-        # Function to get grouped stats
-        def get_grouped_stats(query, group_column):
-            if filters['group_by'] and filters['group_by'] != 'none':
-                group_by_col = getattr(citizens, filters['group_by'])
-                return query.group_by(group_column, group_by_col).all()
-            return query.group_by(group_column).all()
+        # Gender Statistics with grouping
+        selected_group_by = filters['group_by']
+        
+        # Function to create properly grouped statistics
+        def get_grouped_stats(select_columns, group_columns, label_map=None):
+            # Start with base entities we're selecting
+            query = base_query.with_entities(*select_columns)
+            
+            # Add group by columns
+            if group_columns:
+                query = query.group_by(*group_columns)
+            
+            # Execute the query
+            results = query.all()
+            
+            # Convert to dictionaries with proper labels
+            formatted_results = []
+            for row in results:
+                item = {}
+                for i, col in enumerate(row._fields):
+                    # Map to a friendly label if provided
+                    friendly_key = label_map.get(col, col) if label_map else col
+                    item[friendly_key] = row[i]
+                formatted_results.append(item)
+            
+            return formatted_results
 
-        # Gender Statistics
-        gender_query = base_query.with_entities(
-            case(
-                (citizens.gender.is_(None), 'Not Specified'),
-                else_=citizens.gender
-            ).label('gender'),
-            func.count(citizens.citizen_id).label('count')
-        )
-        gender_stats = get_grouped_stats(gender_query, 'gender')
+        # Gender statistics
+        if selected_group_by and selected_group_by != 'none':
+            group_by_col = getattr(citizens, selected_group_by)
+            gender_stats = get_grouped_stats(
+                [citizens.gender.label('gender'), 
+                 group_by_col.label('group_value'),
+                 func.count(citizens.citizen_id).label('count')],
+                [citizens.gender, group_by_col],
+                {'gender': 'gender', 'group_value': 'group_value', 'count': 'count'}
+            )
+        else:
+            gender_stats = get_grouped_stats(
+                [citizens.gender.label('gender'), 
+                 func.count(citizens.citizen_id).label('count')],
+                [citizens.gender],
+                {'gender': 'gender', 'count': 'count'}
+            )
 
         # Age Distribution
-        age_query = base_query.with_entities(
-            case(
-                (current_year - extract('year', citizens.date_of_birth) <= 14, '0-14'),
-                (current_year - extract('year', citizens.date_of_birth) <= 24, '15-24'),
-                (current_year - extract('year', citizens.date_of_birth) <= 54, '25-54'),
-                (current_year - extract('year', citizens.date_of_birth) <= 64, '55-64'),
-                else_='65+'
-            ).label('age_group'),
-            func.count(citizens.citizen_id).label('count')
-        )
-        age_stats = get_grouped_stats(age_query, 'age_group')
+        current_year = 2025
+        age_case = case(
+            (current_year - extract('year', citizens.date_of_birth) <= 14, '0-14'),
+            (current_year - extract('year', citizens.date_of_birth) <= 24, '15-24'),
+            (current_year - extract('year', citizens.date_of_birth) <= 54, '25-54'),
+            (current_year - extract('year', citizens.date_of_birth) <= 64, '55-64'),
+            else_='65+'
+        ).label('age_group')
+        
+        if selected_group_by and selected_group_by != 'none':
+            group_by_col = getattr(citizens, selected_group_by)
+            age_stats = get_grouped_stats(
+                [age_case, 
+                 group_by_col.label('group_value'),
+                 func.count(citizens.citizen_id).label('count')],
+                [age_case, group_by_col],
+                {'age_group': 'age_group', 'group_value': 'group_value', 'count': 'count'}
+            )
+        else:
+            age_stats = get_grouped_stats(
+                [age_case, 
+                 func.count(citizens.citizen_id).label('count')],
+                [age_case],
+                {'age_group': 'age_group', 'count': 'count'}
+            )
 
         # Education Distribution
-        education_query = base_query.with_entities(
-            case(
-                (citizens.educational_qualification.is_(None), 'Not Specified'),
-                else_=citizens.educational_qualification
-            ).label('education'),
-            func.count(citizens.citizen_id).label('count')
-        )
-        education_stats = get_grouped_stats(education_query, 'education')
+        if selected_group_by and selected_group_by != 'none':
+            group_by_col = getattr(citizens, selected_group_by)
+            education_stats = get_grouped_stats(
+                [citizens.educational_qualification.label('education'), 
+                 group_by_col.label('group_value'),
+                 func.count(citizens.citizen_id).label('count')],
+                [citizens.educational_qualification, group_by_col],
+                {'education': 'education', 'group_value': 'group_value', 'count': 'count'}
+            )
+        else:
+            education_stats = get_grouped_stats(
+                [citizens.educational_qualification.label('education'), 
+                 func.count(citizens.citizen_id).label('count')],
+                [citizens.educational_qualification],
+                {'education': 'education', 'count': 'count'}
+            )
 
         # Birth Rate Trends
-        birth_rate_query = base_query.with_entities(
-            extract('year', citizens.date_of_birth).label('year'),
-            func.count(citizens.citizen_id).label('birth_count')
-        )
-        birth_rate_stats = get_grouped_stats(birth_rate_query, 'year')
-        print(birth_rate_stats)
+        year_extract = extract('year', citizens.date_of_birth).label('year')
+        if selected_group_by and selected_group_by != 'none':
+            group_by_col = getattr(citizens, selected_group_by)
+            birth_rate_stats = get_grouped_stats(
+                [year_extract, 
+                 group_by_col.label('group_value'),
+                 func.count(citizens.citizen_id).label('birth_count')],
+                [year_extract, group_by_col],
+                {'year': 'year', 'group_value': 'group_value', 'birth_count': 'birth_count'}
+            )
+        else:
+            birth_rate_stats = get_grouped_stats(
+                [year_extract, 
+                 func.count(citizens.citizen_id).label('birth_count')],
+                [year_extract],
+                {'year': 'year', 'birth_count': 'birth_count'}
+            )
+        
         # Get unique values for filter dropdowns
         filter_options = {
             'gender': db.session.query(citizens.gender).distinct().all(),
@@ -757,8 +996,8 @@ def stats():
 
         return render_template(
             'stats.html',
-            current_datetime="2025-03-02 11:36:54",
-            current_user='',
+            current_datetime="2025-03-03 08:01:05",
+            current_user='sesiii',
             total_population=total_citizens,
             literacy_rate=round(literacy_rate, 2),
             avg_age=round(avg_age, 1),
@@ -769,14 +1008,14 @@ def stats():
             birth_rate_stats=birth_rate_stats,
             available_columns=available_columns,
             filter_options=filter_options,
-            selected_filters=filters,  # Pass the filters to the template
+            selected_filters=filters,
             selected_group_by=filters['group_by']
         )
 
     except Exception as e:
         print(f"Error in stats route: {str(e)}")
+        traceback.print_exc()  # This will print the full stack trace
         return f"An error occurred: {str(e)}", 500
-    
 
     
 @app.route('/admin')

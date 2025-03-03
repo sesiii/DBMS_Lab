@@ -67,11 +67,93 @@
                                 <label class="form-label">Service Type</label>
                                 <select class="form-select" name="type" required>
                                     <option value="" disabled>Select a service type</option>
-                                    <option value="Water Supply" {% if data.type == 'Water Supply' %}selected{% endif %}>Water Supply</option>
-                                    <option value="Road Maintenance" {% if data.type == 'Road Maintenance' %}selected{% endif %}>Road Maintenance</option>
-                                    <option value="Waste Management" {% if data.type == 'Waste Management' %}selected{% endif %}>Waste Management</option>
-                                    <option value="Street Lighting" {% if data.type == 'Street Lighting' %}selected{% endif %}>Street Lighting</option>
-                                    <option value="Sanitation" {% if data.type == 'Sanitation' %}selected{% endif %}>Sanitation</option>
+                                    
+                                    <optgroup label="Infrastructure Services">
+                                        <option value="Road Repair" {% if data.type == 'Road Repair' %}selected{% endif %}>Road Repair</option>
+                                        <option value="Road Construction" {% if data.type == 'Road Construction' %}selected{% endif %}>Road Construction</option>
+                                        <option value="Road Maintenance" {% if data.type == 'Road Maintenance' %}selected{% endif %}>Road Maintenance</option>
+                                        <option value="Bridge Repair" {% if data.type == 'Bridge Repair' %}selected{% endif %}>Bridge Repair</option>
+                                        <option value="Culvert Installation" {% if data.type == 'Culvert Installation' %}selected{% endif %}>Culvert Installation</option>
+                                        <option value="Bus Shelter Construction" {% if data.type == 'Bus Shelter Construction' %}selected{% endif %}>Bus Shelter Construction</option>
+                                        <option value="Public Building Maintenance" {% if data.type == 'Public Building Maintenance' %}selected{% endif %}>Public Building Maintenance</option>
+                                        <option value="Panchayat Building Renovation" {% if data.type == 'Panchayat Building Renovation' %}selected{% endif %}>Panchayat Building Renovation</option>
+                                        <option value="Community Hall Maintenance" {% if data.type == 'Community Hall Maintenance' %}selected{% endif %}>Community Hall Maintenance</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Water Services">
+                                        <option value="Water Supply" {% if data.type == 'Water Supply' %}selected{% endif %}>Water Supply</option>
+                                        <option value="Water Pipeline Repair" {% if data.type == 'Water Pipeline Repair' %}selected{% endif %}>Water Pipeline Repair</option>
+                                        <option value="Water Tank Cleaning" {% if data.type == 'Water Tank Cleaning' %}selected{% endif %}>Water Tank Cleaning</option>
+                                        <option value="Borewell Installation" {% if data.type == 'Borewell Installation' %}selected{% endif %}>Borewell Installation</option>
+                                        <option value="Hand Pump Repair" {% if data.type == 'Hand Pump Repair' %}selected{% endif %}>Hand Pump Repair</option>
+                                        <option value="Drinking Water Testing" {% if data.type == 'Drinking Water Testing' %}selected{% endif %}>Drinking Water Testing</option>
+                                        <option value="Water Supply Extension" {% if data.type == 'Water Supply Extension' %}selected{% endif %}>Water Supply Extension</option>
+                                        <option value="Irrigation Canal Maintenance" {% if data.type == 'Irrigation Canal Maintenance' %}selected{% endif %}>Irrigation Canal Maintenance</option>
+                                        <option value="Water Harvesting Structure" {% if data.type == 'Water Harvesting Structure' %}selected{% endif %}>Water Harvesting Structure</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Sanitation & Waste Management">
+                                        <option value="Waste Management" {% if data.type == 'Waste Management' %}selected{% endif %}>Waste Management</option>
+                                        <option value="Garbage Collection" {% if data.type == 'Garbage Collection' %}selected{% endif %}>Garbage Collection</option>
+                                        <option value="Waste Segregation" {% if data.type == 'Waste Segregation' %}selected{% endif %}>Waste Segregation</option>
+                                        <option value="Public Toilet Maintenance" {% if data.type == 'Public Toilet Maintenance' %}selected{% endif %}>Public Toilet Maintenance</option>
+                                        <option value="Sewage Line Inspection" {% if data.type == 'Sewage Line Inspection' %}selected{% endif %}>Sewage Line Inspection</option>
+                                        <option value="Sanitation" {% if data.type == 'Sanitation' %}selected{% endif %}>Sanitation</option>
+                                        <option value="Village Cleaning Drive" {% if data.type == 'Village Cleaning Drive' %}selected{% endif %}>Village Cleaning Drive</option>
+                                        <option value="Drain Cleaning" {% if data.type == 'Drain Cleaning' %}selected{% endif %}>Drain Cleaning</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Public Utilities">
+                                        <option value="Street Lighting" {% if data.type == 'Street Lighting' %}selected{% endif %}>Street Lighting</option>
+                                        <option value="Street Light Installation" {% if data.type == 'Street Light Installation' %}selected{% endif %}>Street Light Installation</option>
+                                        <option value="Street Light Maintenance" {% if data.type == 'Street Light Maintenance' %}selected{% endif %}>Street Light Maintenance</option>
+                                        <option value="Solar Light Installation" {% if data.type == 'Solar Light Installation' %}selected{% endif %}>Solar Light Installation</option>
+                                        <option value="Electricity Connection" {% if data.type == 'Electricity Connection' %}selected{% endif %}>Electricity Connection</option>
+                                        <option value="Public Address System" {% if data.type == 'Public Address System' %}selected{% endif %}>Public Address System</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Administrative Services">
+                                        <option value="Birth Certificate" {% if data.type == 'Birth Certificate' %}selected{% endif %}>Birth Certificate</option>
+                                        <option value="Death Certificate" {% if data.type == 'Death Certificate' %}selected{% endif %}>Death Certificate</option>
+                                        <option value="Income Certificate" {% if data.type == 'Income Certificate' %}selected{% endif %}>Income Certificate</option>
+                                        <option value="Caste Certificate" {% if data.type == 'Caste Certificate' %}selected{% endif %}>Caste Certificate</option>
+                                        <option value="Land Record Verification" {% if data.type == 'Land Record Verification' %}selected{% endif %}>Land Record Verification</option>
+                                        <option value="Property Tax Collection" {% if data.type == 'Property Tax Collection' %}selected{% endif %}>Property Tax Collection</option>
+                                        <option value="Revenue Record Digitization" {% if data.type == 'Revenue Record Digitization' %}selected{% endif %}>Revenue Record Digitization</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Social Welfare Services">
+                                        <option value="Pension Disbursement" {% if data.type == 'Pension Disbursement' %}selected{% endif %}>Pension Disbursement</option>
+                                        <option value="Healthcare Camp" {% if data.type == 'Healthcare Camp' %}selected{% endif %}>Healthcare Camp</option>
+                                        <option value="Skill Development Workshop" {% if data.type == 'Skill Development Workshop' %}selected{% endif %}>Skill Development Workshop</option>
+                                        <option value="Village Festival Arrangements" {% if data.type == 'Village Festival Arrangements' %}selected{% endif %}>Village Festival Arrangements</option>
+                                        <option value="Anganwadi Center Services" {% if data.type == 'Anganwadi Center Services' %}selected{% endif %}>Anganwadi Center Services</option>
+                                        <option value="Widow Pension Processing" {% if data.type == 'Widow Pension Processing' %}selected{% endif %}>Widow Pension Processing</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Agricultural Services">
+                                        <option value="Agricultural Equipment Rental" {% if data.type == 'Agricultural Equipment Rental' %}selected{% endif %}>Agricultural Equipment Rental</option>
+                                        <option value="Farmer Training Program" {% if data.type == 'Farmer Training Program' %}selected{% endif %}>Farmer Training Program</option>
+                                        <option value="Soil Testing" {% if data.type == 'Soil Testing' %}selected{% endif %}>Soil Testing</option>
+                                        <option value="Crop Damage Assessment" {% if data.type == 'Crop Damage Assessment' %}selected{% endif %}>Crop Damage Assessment</option>
+                                        <option value="Seed Distribution" {% if data.type == 'Seed Distribution' %}selected{% endif %}>Seed Distribution</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Emergency & Safety Services">
+                                        <option value="Flood Relief" {% if data.type == 'Flood Relief' %}selected{% endif %}>Flood Relief</option>
+                                        <option value="Fire Safety" {% if data.type == 'Fire Safety' %}selected{% endif %}>Fire Safety</option>
+                                        <option value="Medical Emergency Transport" {% if data.type == 'Medical Emergency Transport' %}selected{% endif %}>Medical Emergency Transport</option>
+                                        <option value="Disaster Preparedness Training" {% if data.type == 'Disaster Preparedness Training' %}selected{% endif %}>Disaster Preparedness Training</option>
+                                        <option value="Snake Bite Response" {% if data.type == 'Snake Bite Response' %}selected{% endif %}>Snake Bite Response</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Environmental Services">
+                                        <option value="Tree Plantation" {% if data.type == 'Tree Plantation' %}selected{% endif %}>Tree Plantation</option>
+                                        <option value="Pond Cleaning" {% if data.type == 'Pond Cleaning' %}selected{% endif %}>Pond Cleaning</option>
+                                        <option value="Air Quality Monitoring" {% if data.type == 'Air Quality Monitoring' %}selected{% endif %}>Air Quality Monitoring</option>
+                                        <option value="Water Conservation" {% if data.type == 'Water Conservation' %}selected{% endif %}>Water Conservation</option>
+                                        <option value="Animal Vaccination" {% if data.type == 'Animal Vaccination' %}selected{% endif %}>Animal Vaccination</option>
+                                    </optgroup>
                                 </select>
                             </div>
                             
@@ -80,9 +162,14 @@
                                 <select class="form-select" name="status">
                                     <option value="" {% if not data.status %}selected{% endif %}>Select a status</option>
                                     <option value="Pending" {% if data.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="Scheduled" {% if data.status == 'Scheduled' %}selected{% endif %}>Scheduled</option>
                                     <option value="In Progress" {% if data.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="Active" {% if data.status == 'Active' %}selected{% endif %}>Active</option>
                                     <option value="Completed" {% if data.status == 'Completed' %}selected{% endif %}>Completed</option>
                                     <option value="Cancelled" {% if data.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                    <option value="On Hold" {% if data.status == 'On Hold' %}selected{% endif %}>On Hold</option>
+                                    <option value="Delayed" {% if data.status == 'Delayed' %}selected{% endif %}>Delayed</option>
+                                    <option value="Inactive" {% if data.status == 'Inactive' %}selected{% endif %}>Inactive</option>
                                 </select>
                             </div>
                         </div>
