@@ -211,9 +211,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Contact
 
 For questions or support, please contact:
-- Email: your.email@example.com
-- GitHub Issues: https://github.com/your-username/gram-panchayat-management-system/issues
-
+coming soon...
 ---
 
 Made with ❤️ for efficient local governance
